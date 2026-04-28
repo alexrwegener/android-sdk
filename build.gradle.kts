@@ -2,9 +2,7 @@ plugins {
     alias(libs.plugins.android.library)
     alias(libs.plugins.kotlin.android)
     alias(libs.plugins.gradle.ktlint)
-    alias(libs.plugins.gradle.nexus.publish)
     id("maven-publish")
-    id("signing")
 }
 
 repositories {
@@ -102,7 +100,7 @@ afterEvaluate {
     publishing {
         publications {
             register<MavenPublication>("release") {
-                group = "com.statsig"
+                group = "com.life360.statsig"
                 artifactId = "android-sdk"
                 version = project.property("libraryVersion") as String
 
@@ -144,41 +142,6 @@ afterEvaluate {
                 afterEvaluate {
                     from(components["release"])
                 }
-            }
-        }
-        repositories {
-            maven {
-                name = "sonatype"
-                url = uri("https://s01.oss.sonatype.org/service/local/staging/deploy/maven2/")
-                credentials {
-                    username = System.getenv("ORG_GRADLE_PROJECT_MAVEN_USERNAME")
-                    password = System.getenv("ORG_GRADLE_PROJECT_MAVEN_PASSWORD")
-                }
-            }
-        }
-    }
-
-    signing {
-        val signingKeyId = System.getenv("ORG_GRADLE_PROJECT_SIGNING_KEY_ID") ?: ""
-        val signingKey = System.getenv("ORG_GRADLE_PROJECT_SIGNING_KEY") ?: ""
-        val signingPassword = System.getenv("ORG_GRADLE_PROJECT_SIGNING_PASSWORD") ?: ""
-        useInMemoryPgpKeys(signingKeyId, signingKey, signingPassword)
-        if (signingKeyId.isNotEmpty()) {
-            sign(publishing.publications["release"])
-        }
-    }
-}
-
-if (project == rootProject) {
-    nexusPublishing {
-        repositories {
-            sonatype {
-                nexusUrl =
-                    uri("https://ossrh-staging-api.central.sonatype.com/service/local/")
-                snapshotRepositoryUrl =
-                    uri("https://central.sonatype.com/repository/maven-snapshots/")
-                username = System.getenv("ORG_GRADLE_PROJECT_MAVEN_USERNAME")
-                password = System.getenv("ORG_GRADLE_PROJECT_MAVEN_PASSWORD")
             }
         }
     }

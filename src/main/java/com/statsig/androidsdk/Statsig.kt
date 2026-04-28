@@ -449,6 +449,13 @@ object Statsig {
      */
     fun getInitializeResponseJson(): ExternalInitializeResponse = client.getInitializeResponseJson()
 
+    /**
+     * @return Initialize response currently being used as a typed
+     * [InitializeResponse.SuccessfulInitializeResponse] along with evaluation details
+     * @throws IllegalStateException if the SDK has not been initialized
+     */
+    fun getInitializeResponse(): FullExternalInitializeResponse = client.getInitializeResponse()
+
     @JvmSynthetic
     suspend fun shutdownSuspend() {
         client.shutdownSuspend()

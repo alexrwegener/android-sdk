@@ -799,6 +799,22 @@ class StatsigClient : LifecycleEventListener {
         return result ?: ExternalInitializeResponse.getUninitialized()
     }
 
+    /**
+     * @return Initialize response currently being used as a typed
+     * [InitializeResponse.SuccessfulInitializeResponse] along with evaluation details
+     * @throws IllegalStateException if the SDK has not been initialized
+     */
+    fun getInitializeResponse(): FullExternalInitializeResponse {
+        val functionName = "getInitializeResponse"
+        var result: FullExternalInitializeResponse? = null
+        enforceInitialized(functionName)
+        errorBoundary.capture(
+            { result = store.getCurrentCacheFullValuesAndEvaluationReason() },
+            tag = functionName
+        )
+        return result ?: FullExternalInitializeResponse.getUninitialized()
+    }
+
     suspend fun shutdownSuspend() {
         enforceInitialized("shutdownSuspend")
         errorBoundary.captureAsync { shutdownImpl() }

@@ -504,6 +504,9 @@ internal class Store(
     fun getCurrentCacheValuesAndEvaluationReason(): ExternalInitializeResponse =
         ExternalInitializeResponse(gson.toJson(currentCache.values), getEvaluationDetails(true))
 
+    fun getCurrentCacheFullValuesAndEvaluationReason(): FullExternalInitializeResponse =
+        FullExternalInitializeResponse(currentCache.values, getEvaluationDetails(true))
+
     fun getCurrentValuesAsString(): String = gson.toJson(currentCache.values)
 
     fun getCachedInitializationResponse(): InitializeResponse.SuccessfulInitializeResponse =
