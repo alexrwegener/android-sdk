@@ -44,6 +44,24 @@ class StatsigOptions(
      * endpoint, and eventLoggingApi controls the event logging endpoint.
      */
     @SerializedName("eventLoggingAPI") var eventLoggingAPI: String = DEFAULT_EVENT_API,
+
+    /**
+     * Full URL (including the endpoint path) to use for the `initialize` request.
+     * When set, takes precedence over [api] and bypasses the SDK's path concatenation,
+     * so consumers can route through a proxy that requires a non-default path.
+     *
+     * Composes with [initializeFallbackUrls] the same way [api] does: a non-null
+     * [initializeURL] disables the SDK's DNS-TXT fallback resolver for this endpoint.
+     */
+    @SerializedName("initializeURL") var initializeURL: String? = null,
+
+    /**
+     * Full URL (including the endpoint path) to use for `log_event` posts.
+     * When set, takes precedence over [eventLoggingAPI] and bypasses path concatenation.
+     *
+     * Composes with [logEventFallbackUrls] the same way [eventLoggingAPI] does.
+     */
+    @SerializedName("eventLoggingURL") var eventLoggingURL: String? = null,
     /**
      * By default, any custom event your application logs with Statsig.logEvent() includes the current
      * root View Controller. This is so we can generate user journey funnels for your users. You can
@@ -223,6 +241,8 @@ class StatsigOptions(
     internal fun getLoggingCopy(): Map<String, Any?> = mapOf(
         "api" to api,
         "eventLoggingApi" to eventLoggingAPI,
+        "initializeURL" to initializeURL,
+        "eventLoggingURL" to eventLoggingURL,
         "disableCurrentActivityLogging" to disableCurrentActivityLogging,
         "disableDiagnosticsLogging" to disableDiagnosticsLogging,
         "initTimeoutMs" to initTimeoutMs,

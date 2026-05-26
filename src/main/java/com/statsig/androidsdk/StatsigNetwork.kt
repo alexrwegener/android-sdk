@@ -276,7 +276,7 @@ internal class StatsigNetworkImpl(
             initializeRequestsMap[userCacheKey]?.cancel()
             initializeRequestsMap.remove(userCacheKey)
             val response = postRequest<InitializeResponse.SuccessfulInitializeResponse>(
-                UrlConfig(Endpoint.Initialize, api, fallbackUrls),
+                UrlConfig(Endpoint.Initialize, api, fallbackUrls, fullUrl = options.initializeURL),
                 gson.toJson(body),
                 retries,
                 contextType,
@@ -369,7 +369,7 @@ internal class StatsigNetworkImpl(
                 try {
                     emit(
                         postRequest(
-                            UrlConfig(Endpoint.Initialize, api, fallbackUrls),
+                            UrlConfig(Endpoint.Initialize, api, fallbackUrls, fullUrl = options.initializeURL),
                             gson.toJson(body),
                             0,
                             null,
@@ -418,7 +418,7 @@ internal class StatsigNetworkImpl(
         try {
             while (currRetry <= LOG_EVENT_RETRY) {
                 val response = postRequest<LogEventResponse>(
-                    UrlConfig(Endpoint.Rgstr, api, fallbackUrls),
+                    UrlConfig(Endpoint.Rgstr, api, fallbackUrls, fullUrl = options.eventLoggingURL),
                     request.requestBody,
                     currRetry,
                     null,
