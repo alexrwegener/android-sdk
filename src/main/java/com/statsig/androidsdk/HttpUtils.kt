@@ -153,7 +153,7 @@ class HttpUtils {
 
             // The actual client uses the default OkHttp connection timeout
             return bootStrapClient.newBuilder()
-                .dns(DohDnsWithSystemFallback(dohDns))
+                .dns(IPv4PreferringDns(DohDnsWithSystemFallback(dohDns)))
                 .connectTimeout(10.seconds.toJavaDuration())
                 .build()
         }
@@ -169,6 +169,22 @@ class HttpUtils {
                 okHttpClient = builder.build()
             }
         }
+    }
+}
+
+/**
+ * Decorates [delegate] to return IPv4 addresses ahead of IPv6 in the result list.
+ *
+ * On networks where AAAA records are black-holed, OkHttp's RouteSelector tries
+ * addresses sequentially; an IPv6-first list combined with the SDK's outer
+ * initTimeoutMs cap means OkHttp's per-address connect timer never expires and
+ * the IPv4 address is never tried. Mimics what Dns.SYSTEM provides via
+ * getaddrinfo + RFC 6724 source-address selection.
+ */
+internal class IPv4PreferringDns(private val delegate: Dns) : Dns {
+    override fun lookup(hostname: String): List<InetAddress> {
+        val (v4, v6) = delegate.lookup(hostname).partition { it is java.net.Inet4Address }
+        return v4 + v6
     }
 }
 
