@@ -68,11 +68,28 @@ ktlint {
     android = true
 }
 
+// Opt-in switch for the performance suite (StartupPerformanceTest / EvaluationPerformanceTest).
+// The perf tests skip themselves unless `statsig.perf` is set; without this flag a normal
+// `testDebugUnitTest` run reports them as skipped. Run them with:
+//   ./gradlew testDebugUnitTest -PstatsigPerf --tests "*PerformanceTest"
+val runPerformanceTests = project.hasProperty("statsigPerf")
+
 tasks.withType<Test> {
     testLogging {
         events("passed", "skipped", "failed")
+        if (runPerformanceTests) {
+            // Surface the printed timing tables in the console output.
+            showStandardStreams = true
+        }
     }
-    maxParallelForks = Runtime.getRuntime().availableProcessors()
+    if (runPerformanceTests) {
+        systemProperty("statsig.perf", "true")
+        // Timing measurements are meaningless under parallel forks contending for CPU.
+        maxParallelForks = 1
+        maxHeapSize = "2g"
+    } else {
+        maxParallelForks = Runtime.getRuntime().availableProcessors()
+    }
 }
 
 dependencies {
