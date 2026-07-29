@@ -1,7 +1,6 @@
 [versions]
 androidGradlePlugin = "8.13.0"
 gradleKtlint = "13.1.0"
-gradleNexusPublish = "2.0.0"
 kotlin = "1.9.25"
 appCompat = "1.7.1"
 coreKtx = "1.9.0"
@@ -45,4 +44,3 @@ kotlin-android = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin"}
 android-library = { id = "com.android.library", version.ref = "androidGradlePlugin"}
 android-application = { id = "com.android.application", version.ref = "androidGradlePlugin"}
 gradle-ktlint = { id = "org.jlleitschuh.gradle.ktlint", version.ref = "gradleKtlint"}
-gradle-nexus-publish = {id = "io.github.gradle-nexus.publish-plugin", version.ref = "gradleNexusPublish"}
