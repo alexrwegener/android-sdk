@@ -31,7 +31,8 @@ val NetworkDefault: Map<Endpoint, String> = mapOf(
 class UrlConfig(
     val endpoint: Endpoint,
     inputApi: String? = null,
-    var userFallbackUrls: List<String>? = null
+    var userFallbackUrls: List<String>? = null,
+    fullUrl: String? = null
 ) {
     val endpointDnsKey: EndpointDnsKey = ENDPOINT_DNS_KEY_MAP[endpoint] ?: ""
     var defaultUrl: String
@@ -43,7 +44,9 @@ class UrlConfig(
         val defaultApi = NetworkDefault[endpoint]
         defaultUrl = "$defaultApi${endpoint.value}"
 
-        if (customUrl == null && inputApi != null) {
+        if (fullUrl != null) {
+            customUrl = fullUrl
+        } else if (inputApi != null) {
             val inputUrl = "${inputApi.trimEnd('/')}/${endpoint.value}"
             if (inputUrl != defaultUrl) {
                 customUrl = inputUrl

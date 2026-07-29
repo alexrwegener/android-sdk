@@ -49,6 +49,10 @@ class NetworkFallbackResolverTest {
             Endpoint.Initialize,
             "custom.api.com"
         )
+        val FULL_URL_CONFIG = UrlConfig(
+            Endpoint.Initialize,
+            fullUrl = "https://proxy.example.com/v1/initialize"
+        )
     }
 
     @Before
@@ -179,6 +183,41 @@ class NetworkFallbackResolverTest {
 
         val cache = resolver.readFallbackInfoFromCache()
         assertTrue("cache should be empty", cache == null)
+    }
+
+    @Test
+    fun fullUrlOverride_disablesPersistedFallbackRead() = runTest {
+        val json = """
+            {
+                "initialize": {
+                    "url": "fallback.example.com",
+                    "previous": [],
+                    "expiryTime": ${System.currentTimeMillis() + 999999}
+                }
+            }
+        """.trimIndent()
+        testKeyValueStorage.writeValue("networkfallback", STORAGE_KEY, json)
+
+        resolver.initializeFallbackInfo()
+        val activeUrl = resolver.getActiveFallbackUrlFromMemory(FULL_URL_CONFIG)
+        assertNull("fullUrl override should bypass fallback cache read", activeUrl)
+    }
+
+    @Test
+    fun fullUrlOverride_doesNotWriteFallbackCache() = runTest {
+        resolver.initializeFallbackInfo()
+        resolver.tryFetchUpdatedFallbackInfo(
+            FULL_URL_CONFIG,
+            "NetworkError when attempting to fetch resource",
+            false,
+            true
+        )
+
+        val cache = resolver.readFallbackInfoFromCache()
+        assertTrue(
+            "fullUrl override with no userFallbackUrls should not write fallback cache",
+            cache == null
+        )
     }
 
     @Test

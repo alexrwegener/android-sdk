@@ -39,4 +39,28 @@ class StatsigOptionsTest {
             options.getLoggingCopy()["environment"] as Map<String, String>
         ).containsEntry("tier", customTier.lowercase())
     }
+
+    @Test
+    fun urlOverrides_defaultToNull() {
+        val options = StatsigOptions()
+        assertThat(options.initializeURL).isNull()
+        assertThat(options.eventLoggingURL).isNull()
+    }
+
+    @Test
+    fun loggingCopy_surfacesUrlOverrides() {
+        val options = StatsigOptions(
+            initializeURL = "https://flags.life360.com/v1/initialize",
+            eventLoggingURL = "https://flags.life360.com/v1/l360-rgstr"
+        )
+        val copy = options.getLoggingCopy()
+        assertThat(copy).containsEntry(
+            "initializeURL",
+            "https://flags.life360.com/v1/initialize"
+        )
+        assertThat(copy).containsEntry(
+            "eventLoggingURL",
+            "https://flags.life360.com/v1/l360-rgstr"
+        )
+    }
 }
