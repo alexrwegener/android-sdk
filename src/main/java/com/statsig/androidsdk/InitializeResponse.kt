@@ -15,7 +15,7 @@ sealed class InitializeResponse {
         @SerializedName("exception") val exception: Exception? = null,
         @SerializedName("statusCode") val statusCode: Int? = null
     ) : InitializeResponse()
-    internal data class SuccessfulInitializeResponse(
+    data class SuccessfulInitializeResponse(
         @SerializedName("feature_gates") val featureGates: Map<String, APIFeatureGate>?,
         @SerializedName("dynamic_configs") val configs: Map<String, APIDynamicConfig>?,
         @SerializedName("layer_configs") var layerConfigs: Map<String, APIDynamicConfig>?,
@@ -33,7 +33,7 @@ sealed class InitializeResponse {
     ) : InitializeResponse()
 }
 
-internal data class APIFeatureGate(
+data class APIFeatureGate(
     @SerializedName("name") val name: String,
     @SerializedName("value") val value: Boolean = false,
     @SerializedName("rule_id") val ruleID: String = "",
@@ -43,7 +43,7 @@ internal data class APIFeatureGate(
     @SerializedName("id_type") val idType: String? = null
 )
 
-internal data class APIDynamicConfig(
+data class APIDynamicConfig(
     @SerializedName("name") val name: String,
     @SerializedName("value") val value: Map<String, Any>,
     @SerializedName("rule_id") val ruleID: String = "",

@@ -923,6 +923,14 @@ internal class Store(
         )
     }
 
+    fun getCurrentCacheFullValuesAndEvalDetails(): FullExternalInitializeResponse {
+        val snapshot = readState()
+        return FullExternalInitializeResponse(
+            snapshot.values,
+            getEvalDetails(snapshot, true)
+        )
+    }
+
     fun getCurrentValuesAsString(): String = gson.toJson(readState().values)
 
     fun getCachedInitializationResponse(): InitializeResponse.SuccessfulInitializeResponse =
